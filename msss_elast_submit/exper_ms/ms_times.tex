@@ -1,0 +1,41 @@
+ 
+\begin{tikzpicture} 
+    \begin{axis}[mark repeat= {1},
+                        width=10.4cm, height=10.4cm,
+                        cycle list name=color list,
+%                         title = {\textbf{3D wedge problem at $\mathbf{f=4}$ Hz ($\mathbf{h=10m}$)}},
+                        ylabel = {total CPU time [s]},
+                        xlabel = {number of equally-spaced frequencies},
+                        xmin = 2,
+                        xmax = 10,
+%                         ymin = 1e-6,
+                        ymax = 7500,
+                        grid= major,
+                        legend style = {legend cell align=left, legend pos = north west,
+                           font =\tiny},
+                        line width = 0.6pt,
+%                         xticklabels={$\tau = 0.4\omega$,$\tau = \omega$,$\tau=1.6\omega$},xtick={0.4,1,1.6},
+%                         ytick={1,200,400,600},
+                        ]
+                        
+        \addplot [color=red,mark=o, mark size=3, very thick]
+        table[x={Freq}, y={Time}]{exp_scale.txt};
+                 
+	\addplot [color=red,mark=x, mark size=5, mark options=solid, dashed, very thick]
+        table[x={Freq}, y={Time}]{exp_scale24_28.txt};
+        
+        \addplot [color=blue,mark=triangle,mark size=3, mark options=solid, dashed, very thick]
+        table[x={Freq}, y={Time}]{exp_scale2_4.txt};
+        
+% 	\addplot [color=red, dashed, very thick]
+%         table[x={Freq}, y={exp_times}]{exp_scale.txt};
+        
+              \legend{ \normalsize{$f_k \in [2.4,2.8]$ Hz - no rotation},
+%                        \large{extrapolation},
+                       \normalsize{$f_k \in [2.4,2.8]$ Hz -  rotation},
+                       \normalsize{$f_k \in [2.0,4.0]$ Hz -  rotation}
+               }
+     \end{axis}
+\end{tikzpicture}
+
+

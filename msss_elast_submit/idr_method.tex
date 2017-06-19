@@ -1,0 +1,146 @@
+\section{The Induced Dimension Reduction (IDR) method}
+\label{ch:idr}
+Krylov subspace methods are an efficient tool for the iterative numerical solution of large-scale linear systems of equations \cite{LS13}.
+In particular, the matrices $K, C, M$ that typically are obtained from a discretization of the time-harmonic elastic wave equation \eqref{eq:disc_prob} 
+are ill-conditioned and have very large dimensions, especially when high frequencies are considered.  
+For these reasons, the numerical solution is computationally 
+challenging, and factors like memory consumption and computational 
+efficiency have to be taken into account when selecting a suitable Krylov method.
+
+The Generalized Minimum Residual (GMRES) method \cite{ss86} is one of the most
+widely-used Krylov method because of its rather simple implementation and optimal convergence property. Nevertheless, GMRES is a \textit{long-recurrence}
+Krylov method, i.e., its requirements for memory and computation grow in each
+iteration which is unfeasible when solving linear systems arising from the elastic wave equation.
+On the other hand, short-recurrence Krylov methods keep the computational cost 
+constant per iteration; one of the most used method of this class is the 
+Bi-conjugate gradient stabilized (Bi-CGSTAB) method \cite{v92}.
+
+In this work we propose to apply an alternative short-recurrence Krylov method: the Induced Dimension Reduction (IDR) method \cite{gs11,sg08}. 
+IDR($s$) uses recursions of depth $s+1$, with $s \in \mathbb{N}^+$ being typically small, to solve linear systems of equations of the form,
+\begin{equation}\label{lin_sys}
+A\x=\rhs, \quad A \in \mathbb{C}^{\n \times \n}, \quad \{\x, \rhs\} \in \mathbb{C}^\n,
+\end{equation}
+where the coefficient matrix $A$ is a large, sparse, and in general non-Hermitian.
+We mention some important numerical properties of the IDR($s$) method: First,
+finite termination of the algorithm is ensured with IDR($s$) computing the exact solution 
+in $\n+\frac{\n}{s}$ iterations in exact arithmetics. Second, Bi-CGSTAB and
+IDR($1$) are mathematically equivalent \cite{ssg10}. Third, IDR($s$) with $s>1$ 
+often outperforms Bi-CGSTAB for numerically difficult problems, for example, for
+convection-diffusion-reaction problems where the convection term is dominating, 
+or problems with a large negative reaction term, cf. \cite{sg08} and \cite{gs11}, respectively.
+\subsection{IDR(s) for linear systems}
+\label{ch:idr_linsys}
+We present a brief introduction of the IDR($s$) method that closely follows \cite{sg08}. 
+In Section \ref{ch:idr_me}, we explain how to use IDR($s$) for solving \eqref{eq:mateq_approach2} for multiple
+frequencies in a matrix equation setting. We introduce the basic concepts 
+of the IDR($s$) method. The IDR($s$) algorithm is based on the following theorem.
+\begin{theorem}[The IDR($s$) theorem]
+\label{idr_thm}
+Let $A$ be a matrix in $\C^{\n\times \n}$,  let $\vv{v}_0$ be any non-zero vector in $\C^\n$, 
+and let $\mathcal{G}_0$ be the full Krylov subspace, $\mathcal{G}_0 := \mathcal{K}_\n(A,\vv{v}_0)$. Let $\shadow$ be a 
+(proper) subspace of $\C^\n$ such that $\shadow$ and $\mathcal{G}_0$ do not share a nontrivial
+invariant subspace of $A$, and define the sequence: 
+\begin{equation}
+\mathcal{G}_{j} := (I-\idrpar_{j}A)(\mathcal{G}_{j-1}\cap \shadow ),  \quad j=1,\, 2,\,\dots,
+\end{equation}
+where $\idrpar_j$ are nonzero scalars. Then it holds:
+\begin{enumerate} 
+\item $\mathcal{G}_{j+1} \subset \mathcal{G}_{j}$, for $j\geq 0$, and,  
+\item $\text{dim}(\mathcal{G}_{j+1}) < \text{dim}(\mathcal{G}_{j}) \text{, unless } \mathcal{G}_{j} \equiv \{\vv{0}\}$. 
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+ Can be found in \cite{sg08}. \qed
+\end{proof}
+Exploiting the fact that the subspaces $\mathcal{G}_j$ are shrinking and $\mathcal{G}_j = \{\vv{0}\}$ for some $j$,
+IDR($s$) solves the problem (\ref{lin_sys}) by constructing residuals $\vv{r}_{k+1}$ in the subspaces $\mathcal{G}_{j+1}$, while in parallel,
+it extracts the approximate solutions $\x_{k+1}$. 
+In order to illustrate how to create a residual vector in the space $\mathcal{G}_{j+1}$,
+let us assume that the space $\mathcal{S}$ is the left null space of a
+full rank matrix $P:=[\vv{p}_1,\,\vv{p}_2,\dots ,\vv{p}_s]$, 
+$\{\x_i\}_{i=k-(s+1)}^k$ are $s+1$ approximations to \eqref{lin_sys} and their corresponding residual vectors
+$\{\vv{r}_i\}_{i=k-(s+1)}^k$ are in $\mathcal{G}_j$.  
+IDR($s$) creates a residual vector $\vv{r}_{k+1}$ in $\mathcal{G}_{j+1}$ and obtains the approximation $\x_{k+1}$
+using the following $(s+1)$-term recursions,
+\begin{align*}
+\x_{k+1} &=  \x_{k} + \idrpar_{j+1}\vv{v}_k +\sum_{j=1}^s \gamma_j \Delta\x_{k-j}, \\
+\vv{r}_{k+1} &=  (I - \idrpar_{j+1}A)\vv{v}_k, \quad
+\vv{v}_{k} =   \vv{r}_k - \sum_{j=1}^s \gamma_j \Delta\vv{r}_{k-j},
+\end{align*}
+where $\Delta \vv{y}_k$ is the forward difference operator $\Delta \vv{y}_k :=
+\vv{y}_{k+1} - \vv{y}_k$.  The vector $\vv{c} = (\gamma_1,\, \gamma_2,\,\dots,\gamma_s)^\mathsf{T}$ can be
+obtained imposing the condition $\vv{r}_{k+1} \in \mathcal{G}_{j+1}$ by solving the
+$s\times s$ linear system,
+\begin{equation*}
+P^\trp [\Delta \vv{r}_{k-1}, \, \Delta \vv{r}_{k-2},\,\dots, \Delta
+\vv{r}_{k-s}]\vv{c} = P^\trp\vv{r}_k.
+\end{equation*}
+At this point, IDR($s$) has created a new residual vector $\vv{r}_{k+1}$ in
+$\mathcal{G}_{j+1}$. However, using the fact that $\mathcal{G}_{j+1} \subset \mathcal{G}_{j}$, 
+$\vv{r}_{k+1}$ is also in $\mathcal{G}_{j}$, IDR($s$) repeats the above computation
+in order to create $\{\vv{r}_{k+1}, \, \vv{r}_{k+2},\, \dots,
+\vv{r}_{k+s+1}\}$ in $\mathcal{G}_{j+1}$. Once $s+1$ residuals are in
+$\mathcal{G}_{j+1}$, IDR($s$) is able to sequentially create new residuals in
+$\mathcal{G}_{j+2}$.
+
+\subsection{Preconditioned IDR($s$) for linear matrix equations}
+\label{ch:idr_me}
+The IDR($s$) theorem \ref{idr_thm} can be generalized to solve linear problems in any finite-dimensional vector space. In particular, IDR($s$) has recently been a\-da\-pted to solve linear matrix equations \cite{ag15}. In this work, we use this generalization of the IDR($s$) method to solve the time-harmonic elastic wave equation at multiple frequencies. Using the definition of the linear operator $\op(\cdot)$ in \eqref{eq:mateq_approach2} yields a matrix equation in short-hand notation, $\op(\X) = \blkrhs$, which is close to \eqref{lin_sys}. Here, the block right-hand side $\blkrhs$ equals
+$$\blkrhs := \rhs[1,\, 1,\,\dots,1]_\Nom \quad \text{ or } \quad \blkrhs := [\rhs_1,\, \rhs_2,\,\hdots,\rhs_\Nom]$$
+depending whether we consider a constant source term for each frequency as in \eqref{LEWE} or allow variations.
+
+IDR($s$) for solving \eqref{eq:mateq_approach2} uses the same recursions described in Section \ref{ch:idr_linsys} acting on block matrices. The main differences with the original IDR($s$) algorithm of \cite{sg08} are the substitution of the matrix-vector product $A \x$ 
+by the application of the linear operator $\op(\X)$, and the use of Frobenius 
+inner products, see Definition \ref{def:Frob}. Note that two prominent long-recurrence Krylov methods have been generalized to the solution of linear matrix equations in \cite{JMS99} using a similar approach. In Algorithm \ref{bio_idr}, we present IDR($s$) for solving the matrix 
+equation \eqref{eq:mateq_approach2} with bi\-orth\-o\-gonal residuals (see details in \cite{ag15,gs11}). The preconditioner used in Algorithm \ref{bio_idr} is described in the following Section. 
+
+%right preconditioning
+%\begin{align*}\label{eq:right_precon}
+%\op(\mathbf{Y}) = \blkrhs, \quad \precon(\tau)\X = \mathbf{Y}
+%\end{align*}
+
+\begin{definition}[Frobenius inner product, \cite{JMS99}]
+\label{def:Frob}
+ The \textit{Frobenius inner product} of two real matrices $A, B$ of the same size is defined as $\langle A, B \rangle_F := \text{tr}(A^\trp B)$, where $\text{tr}(\cdot)$ denotes the trace of the matrix $A^\trp B$. The \textit{Frobenius norm} is, thus,  given by $\|A\|_F^2 := \langle A , A \rangle_F$.
+\end{definition}
+
+\begin{algorithm}[ht] 
+\caption{Preconditioned IDR($s$) for matrix equations \cite{ag15}}\label{bio_idr} \begin{algorithmic}[1]
+\Procedure{PIDR($s$)}{} \State \parbox[t]{\dimexpr\linewidth-\algorithmicindent}{\textbf{Input:} $\op$ as defined in \eqref{eq:mateq_approach2}, $\blkrhs \in \C^{\n\times \Nom},\,tol \in (0,\, 1), \\s\in\mathbb{N}^+,\, P\in \C^{\n\times (s\times \Nom)},\, \X_0 \in \C^{\n\times \Nom}$, preconditioner $\precon$ \strut} 
+\State \textbf{Output:} $\X$ such that $\|\blkrhs-\op(\X)\|_F/\|\blkrhs\|_F\leq tol$ \vspace{0.2cm}
+\State $G=0\in\mathbb{C}^{\n\times s\times \Nom},\, U=0\in\C^{\n\times s\times \Nom}$
+\State $M=I_s\in\C^{s\times s},\, \idrpar = 1 $ %\vspace{0.2cm} 
+\State $R = \blkrhs - \op(\X_0)$
+\While{$\|R\|_F\leq tol \cdot \|\blkrhs\|_F$}
+    \State Compute $[\vv{f}]_i =   \langle P_i,\,R\rangle_F$ for $i=1,\,\dots,\,s$ \For{$k=1$ to $s$}
+    \State Solve $\vv{c}$ from $M\vv{c} = \vv{f}, \, (\gamma_1,\dots,\gamma_s)^\mathsf{T} = \vv{c}$ 
+    \State $V = R - \sum_{i=k}^s \gamma_i G_i$ 
+    \State $V = \precon^{-1}(V)$ \Comment{Apply preconditioner, see Section \ref{ch:msss}}
+    \State $U_k = U\vv{c} + \idrpar V$ \State $G_k = \mathcal{A}(U_k) $  
+    \For{$i=1$ to $k-1$ }
+        \State $\alpha = \langle {P}_i,\,{G}_k\rangle_F/[M]_{i,i}$ 
+        \State ${G}_k = {G}_k - \alpha {G}_i $ 
+        \State ${U}_k = {U}_k - \alpha {U}_i $ 
+    \EndFor \State $[M]_{ik} = \langle P_i,\,{G}_k\rangle_F$%,\, [M]_{ik} = \mu_{i,k},$ for $i=k,\dots,s$ 
+    \State $\beta = [\vv{f}]_k/[M]_{k,k}$ 
+    \State $R = R - \beta {G}_k$ \State $\X = \X + \beta {U}_k$ 
+    \If{$k+1 \leq s$} 
+        \State $[\vv{f}]_i = 0$ for $i=1,\dots,k$ 
+        \State $[\vv{f}]_i = [\vv{f}]_i - \beta [M]_{i,k}$ for $i=k+1,\dots,s$ 
+    \EndIf 
+    \State Overwrite $k$-th block of $G$ and $U$ by $G_k$ and $U_k$  
+\EndFor 
+\State $V = \precon^{-1}(R)$ \Comment{Apply preconditioner, see Section \ref{ch:msss}}
+\State $T=\mathcal{A}(V)$ 
+\State $\idrpar = \langle T, R \rangle_F/\langle T, T \rangle_F$
+\State $\rho =\langle T, R \rangle_F/(\|T\|_F\|R\|_F)$
+\If{$|\rho|< \rho_0$} \Comment{$\rho_0 = 0.7$ is recommended in \cite{SV95}}
+    \State $\idrpar = \rho_0 \times \idrpar/|\rho|$ 
+\EndIf
+\State $R = R - \idrpar T$ 
+\State $\X = \X + \idrpar V$
+    \EndWhile 
+\State \textbf{return} $\X \in \C^{\n \times \Nom}$ 
+\EndProcedure 
+\end{algorithmic}
+\end{algorithm} 

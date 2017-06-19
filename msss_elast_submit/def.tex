@@ -1,0 +1,69 @@
+%Laplace symbol
+\newcommand*\Laplace{\mathop{}\!\mathbin\bigtriangleup}
+
+\newcommand{\vv}[1]{\mathbf{#1}}
+\newcommand{\trp}{\mathsf{H}}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+
+%right hand size vector
+\newcommand{\rhs}{\mathbf{b}}
+\newcommand{\source}{\mathbf{s}}
+%right hand size block vector
+\newcommand{\blkrhs}{B}
+
+%main operator A
+\newcommand{\op}{{\mathcal{A}}}
+%Preconditioning operator P
+\newcommand{\precon}{{\mathcal{P}}}
+
+% scalar shift
+\newcommand{\shift}{{\omega}}
+%G_j parameter in IDR
+\newcommand{\idrpar}{{\xi}}
+%leading dimension of A
+\newcommand{\n}{N}
+%Number of shift
+\newcommand{\Nom}{{N_\shift}}
+% Spatial dimensions
+\newcommand{\nx}{{n_x}}
+\newcommand{\ny}{{n_y}}
+\newcommand{\nz}{{n_z}}
+% Number of blocks D_i
+\newcommand{\nblks}{{n}}
+\newcommand{\ssorfac}{{\eta}}
+
+%R set
+\newcommand{\R}{{\mathbb{R}}}
+%C set
+\newcommand{\C}{{\mathbb{C}}}
+%shadow space for IDR
+\newcommand{\shadow}{{\mathcal{S}}}
+
+%Unknow 
+\newcommand{\x}{{\mathbf{x}}}
+\newcommand{\X}{{\mathbf{X}}}
+
+% mathcal soooo ugly
+\newcommand{\sss}{SSS }
+\newcommand{\msss}{MSSS }
+\newcommand{\rank}{{r}}
+
+\newcommand{\marmousi}{\texttt{Marmousi-II} }
+
+\makeatletter
+\providecommand*{\cupdot}{%
+  \mathbin{%
+    \mathpalette\@cupdot{}%
+  }%
+}
+\newcommand*{\@cupdot}[2]{%
+  \ooalign{%
+    $\m@th#1\cup$\cr
+    \hidewidth$\m@th#1\cdot$\hidewidth
+  }%
+}
+\makeatother
+
+\def\ds{\displaystyle} 
+
+\newtheorem{exper}{Experiment}

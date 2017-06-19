@@ -1,0 +1,71 @@
+\phantom{\LARGE{Appendix}}
+\begin{normalsize}
+\noindent\textbf{Appendix} \\
+\end{normalsize}
+
+\noindent The appendix serves two purposes: We illustrate two basic SSS matrix operations used at 1D level by means of an example computation. At the same time, we complete Algorithm \ref{LU}. For simplicity, we consider the case $n=4$ in Definition \ref{def_sss},
+\begin{equation*}%\label{eqn_sss_example}
+        A=\begin{bmatrix}
+                      D_1 & U_1V_2^\trp & U_1W_2V_3^\trp & U_1W_2W_3V_4^\trp \\
+                      P_2Q_1^\trp & D_2 & U_2V_3^\trp & U_2W_3V_4^\trp  \\
+                      P_3R_2Q_1^\trp & P_3Q_2^\trp & D_3 & U_3V_4^\trp  \\
+                      P_4R_3R_2Q_1^\trp & P_4R_3Q_2^\trp & P_4Q_3^\trp & D_4
+                    \end{bmatrix},
+\end{equation*}
+and refer to standard literature for the more general case.
+\section{Inversion of a lower/upper diagonal SSS matrix}
+\label{app_invsss}
+A lower diagonal SSS matrix in generator form is given by 
+\begin{align}
+\label{L_sss}
+ L = SSS(P_s, R_s, Q_s, D_s, 0, 0, 0), \quad 1 \leq s \leq n,
+\end{align}
+and we denote $L^{-1}$ via,
+\begin{align*}
+ L^{-1} = SSS(\underbar{P}_s, \underbar{R}_s, \underbar{Q}_s, \underbar{D}_s, 0, 0, 0), \quad 1 \leq s \leq n.
+\end{align*}
+Clearly, for $n=4$, the matrix \eqref{L_sss} yields,
+\begin{equation*}%\label{eqn_sss_example}
+        L=\begin{bmatrix}
+                      D_1 & 0 & 0 & 0 \\
+                      P_2Q_1^\trp & D_2 & 0 & 0  \\
+                      P_3R_2Q_1^\trp & P_3Q_2^\trp & D_3 & 0  \\
+                      P_4R_3R_2Q_1^\trp & P_4R_3Q_2^\trp & P_4Q_3^\trp & D_4
+                    \end{bmatrix},
+\end{equation*}
+and we immediately conclude $\underbar{D}_s = D_s^{-1}, s=1,...,4,$ for all diagonal generators of $L^{-1}$.
+In Lemma \ref{lu_sss}, we claim that $L^{-1}$ can be computed without increase of the off-diagonal rank, and we illustrate this fact by computing the generators at entry $(2,1)$:
+\begin{align*}
+ & P_2 Q_1^\trp \underbar{D}_1 + D_2 \underbar{P}_2 \underbar{Q}_1^\trp = 0 \quad \Leftrightarrow \quad \underbar{P}_2 \underbar{Q}_1^\trp \equiv (-D_2^{-1} P_2) (D_1^{-\trp} Q_1)^\trp.
+\end{align*}
+
+The computation of $U^{-1}$ in Algorithm \ref{LU} can be done analogously, and we refer to \cite[Lemma 2]{sss_techrep03} for the complete algorithm and the case $n \neq 4$.
+\section{Matrix-matrix multiplication in SSS structure}
+\label{app_matmulsss}
+% {\color{red}How to perform $A \cdot B$? Note that in Lemma \ref{lu_sss} off-diagonal rank won't grow, but in general mat-mat it does!!}
+In the final step of Algorithm \ref{LU} we perform the matrix-matrix multiplication  $A^{-1} = U^{-1} \cdot L^{-1}$ with $U^{-1}$ and $L^{-1}$ given in upper/lower diagonal SSS format, cf. Appendix \ref{app_invsss}. In this Section, we illustrate how to perform the SSS matrix-matrix multiplication $C = A \cdot B$ when $n=4$ and $A$ and $B$ are given as,
+\begin{align*}
+\begin{bmatrix}
+    D_1^A & U_1V_2^\trp & U_1W_2V_3^\trp & U_1W_2W_3V_4^\trp \\
+    0 & D_2^A & U_2V_3^\trp & U_2W_3V_4^\trp  \\
+    0 & 0 & D_3^A & U_3V_4^\trp  \\
+    0 & 0 & 0 & D_4^A
+    \end{bmatrix},
+\begin{bmatrix}
+    D_1^B & 0 & 0 & 0 \\
+    P_2Q_1^\trp & D_2^B & 0 & 0  \\
+    P_3R_2Q_1^\trp & P_3Q_2^\trp & D_3^B & 0  \\
+    P_4R_3R_2Q_1^\trp & P_4R_3Q_2^\trp & P_4Q_3^\trp & D_4^B
+    \end{bmatrix}.
+\end{align*}
+The SSS matrix $C$ can then be computed by appropriate block multiplications of the respective generators. For example, the $(3,2)$ entry of the product yields,
+\begin{align*}
+C_{32} &= 0 \cdot D_2^B + D_3^A P_3 Q_2^\trp + U_3 V_4^\trp P_4 R_3 Q_2^\trp \\
+       &= (D_3^A P_3 + U_3 V_4^\trp P_4 R_3) Q_2^\trp \equiv P_3^C (Q_2^C)^\trp
+\end{align*}
+% \begin{align*}
+% C_{32} &= P_3 R_2 Q_1^\trp U_1 V_2^\trp + P_3 Q_2^\trp D_2^B + D_3^A \cdot 0 \\
+%        &= P_3 (R_2 Q_1^\trp U_1 V_2^\trp + Q_2^\trp D_2^B) \equiv P_3^C (Q_2^C)^\trp
+% \end{align*}
+
+The above computation illustrates on the one hand that the off-diagonal rank does not increase due to the lower/upper diagonal SSS structure of the matrices $A$ and $B$. On the other hand, we note that in general the off-diagonal rank of $C$ will increase due to the non-vanishing term that contains the full-rank generator $D_2^B$. Matrix-matrix multiplication in SSS form is presented in \cite[Theorem~1]{sss_techrep03}.

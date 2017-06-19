@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage[top=90pt,bottom=90pt,left=110pt,right=105pt]{geometry}
+\usepackage{color}
+\usepackage{amssymb,amsmath,amsfonts,mathtools}
+\usepackage{footnote, hyperref}
+
+\begin{document}
+
+\title{\bf COMG-D-16-00141}
+\author{Reviewer \#1}
+
+\maketitle
+
+This is a very interesting and well written paper that analyses a topic that is pertinent to this journal, I therefore recommend it for publication. FWI is a very important topic in exploration seismology and there is significant interest in the developments of algorithms for solving this problem in the frequency domain. 
+
+{\color{red}A: Thanks for your kind remarks and your valueable suggestions concerning the article!}\\
+
+\noindent I would like to point out the following minor corrections:
+
+\begin{enumerate}
+
+\item 1st paragraph of section 1. "...seismic exploration is an approach that...".- Seismic exploration includes many methods, of which FWI is one of them. Rephrase this sentence.
+
+{\color{red}A: We rephrased the sentence according to your suggestions.}
+
+\item Sec. 3.1, 1st paragraph after theorem 1. Check the subindex "j+i", should it be "j+1"?
+
+{\color{red}A: We corrected the index.}
+
+\item Pg.6, right column, 1st paragraph. It is awkward to refer to definition 5 before it has been introduced. Either move the definition to right after definition 4 or move this sentence to after def.5.
+
+{\color{red}A: For layout reasons we prefer to keep definition 5 at this position. This way, it also bridges to Section 4.2 that covers the 2D case where MOR techniques are mainly applied.}
+
+\item There is something wrong with the numbering of equations. Why is there no equation 16? Also, you have equation 18 and 18(a-d).
+
+{\color{red}A: We fixed that. Sorry!}
+
+\item Corollary 2. Is the memory requirement linear for $p>1$?
+
+{\color{red}A: The memory requirement is still linear: The 3D operator $\mathcal{P}_{3D}(\tau)$ in (22) has, for general $p \in \mathbb{N}^+$, $n_z$ diagonal blocks in \texttt{L2\_SSS} format (cf. Definition 6) and $\underbar{L}$ and $\bar{U}$ together have $2 \sum_{i=1}^p (n_z - i) = 2 p n_z - p(p+1)$ blocks in \texttt{coo} format. This increase is due to a larger support of B-splines with increasing polynomial degree $p$ and, therefore, a larger overlap of basis functions for instance when $[M]_{ij}$ is computed. For the same reason, the number of non-zeros, and hence the memory requirement, of the \texttt{coo} blocks is of the (linear) order $\mathcal{O}(n_x n_y)$. Concerning level-2, the SSS generators of the inverse Schur complements $S_i^{-1}$ are limited in memory by the same constant $r^\ast$ of the MOR algorithm. The increase of \texttt{mem}$(\mathcal{P}_{2D})$ due to a larger support is linear for the same reason as explained for the blocks in \texttt{coo} format. For simplicity and readability, we prefer to restrict the derivations in the paper to the case $p=1$. We added a short note after the proof on page 9.}
+
+\item Sec. 5.1, 1st bullet point. "Demonstrate the dependency on ..." clarify the dependency of what.
+
+{\color{red}A: We clearify that the maximum off-diagonal rank is the key parameter of the MSSS preconditioner which influences the convergence behavior of the iterative method.}
+
+\item Avoid using the "e" notation, e.g. "10e-8". This is useful in ASCII text, but here you can properly write the number with exponent.
+
+{\color{red}A: We prefer the "e" notation whenever we specify the value of the convergence tolerance \texttt{tol}. This ASCII notation resembles the standard choice in a respective implementation.}
+
+\item Pg.11, left column, 2nd paragraph, last sentence. "numerical prove" $\rightarrow$ "numerical evidence".
+
+{\color{red}A: Has been changed accordingly.}
+
+\item Pg.13, left column, exp.7. "In figure 14" $\rightarrow$ "in figure 15". Also, it would be helpful if you indicate the approximate slopes in the figure to support the conclusion.
+
+{\color{red}A: We adapted the reference to the figure. Approximate slopes are now indicated in Figure 15 based on a linear fit of the respective convergence curve.}
+
+\item I believe it is pertinent to cite the following paper: Patrick Amestoy, Romain Brossier, Alfredo Buttari, Jean-Yves L'Excellent, Theo Mary, Ludovic Métivier, Alain Miniussi, and Stephane Operto (2016). "Fast 3D frequency-domain full-waveform inversion with a parallel block low-rank multifrontal direct solver: Application to OBC data from the North Sea." GEOPHYSICS, 81(6), R363-R383. doi: 10.1190/geo2016-0052.1
+
+{\color{red}A: The reference has been added to our introduction.}
+
+\end{enumerate}
+
+\vspace{1cm}
+
+\noindent \textbf{General remarks:}\\
+We slightly adapted \textbf{Experiment 6} based on new inside: In [7] we consider elastic problems at multiple wave frequencies solved with the (preconditioned) multi-shift GMRES algorithm of Frommer and Gl\"assner\footnote{See: \href{http://epubs.siam.org/doi/abs/10.1137/S1064827596304563}{http://epubs.siam.org/doi/abs/10.1137/S1064827596304563}}. The spectral analysis developed in [7] gives rise to an obvious extension of the matrix equation approach presented in the present paper. We use a right-multiplication of the block unknown $\mathbf{X}$ with a diagonal matrix whose $k$-th entry is $e^{-i(\varphi_k-\varphi_1)}$ in order to appropriately rotate the spectrum of the block operator. This modification leads to a more clustered spectrum for the matrix equation approach and is explained in more detail in [7] where global GMRES is used. As a result, the experiment for frequency range $f_k \in [2.4,2.8]$ Hz is improved and we added a wider range experiment $f_k \in [2.0,4.0]$ Hz to the document, cf. Figure~13.
+\end{document}

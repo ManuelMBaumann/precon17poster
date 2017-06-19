@@ -1,0 +1,107 @@
+\documentclass{article}
+\usepackage[top=50pt,bottom=90pt,left=110pt,right=105pt]{geometry}
+\usepackage{color}
+\usepackage{amssymb,amsmath,amsfonts,mathtools}
+\usepackage{footnote, hyperref}
+\usepackage{float}
+
+\newcommand{\trp}{\mathsf{H}}
+\newcommand{\marmousi}{\texttt{Marmousi-II} }
+
+\begin{document}
+
+\title{\bf An MSSS-Preconditioned Matrix Equation Approach for the Time-Harmonic Elastic Wave Equation at Multiple Frequencies\footnote{Submission number: COMG-D-16-00141}}
+\author{- Authors' Proof -}
+
+\maketitle
+
+
+\noindent \textbf{Queries:}
+
+\begin{itemize}
+ \item[Q1:] The authors M. Baumann, R. Astudillo and M. B. van Gijzen have identical affiliation. Please merge the superscripts 1 and 2 in line 5 to: \textsf{Delft University of Technology, Delft, The Netherlands}. Moreover, please change affiliation \#4 to \textsf{Nanyang Technological University, Singapore}.
+ \item[Q2:] The font sizes are acceptable here since in both figures we do not put emphasis on the concrete numbers.
+ \item[Q3:] Please change text in parenthesis in line 737 to: ... (in Fig. 14 we exemplify setup and numerical solution at $4$ Hz) 
+ \item[Q4:] The appendix section is presented correctly.
+ \item[Q5:] Please change to:
+ \begin{align*}
+A &= \begin{bmatrix}
+    D_1^A & U_1V_2^\trp & U_1W_2V_3^\trp & U_1W_2W_3V_4^\trp \\
+    0 & D_2^A & U_2V_3^\trp & U_2W_3V_4^\trp  \\
+    0 & 0 & D_3^A & U_3V_4^\trp  \\
+    0 & 0 & 0 & D_4^A
+    \end{bmatrix}, \quad \text{and}
+\\
+B &= \begin{bmatrix}
+    D_1^B & 0 & 0 & 0 \\
+    P_2Q_1^\trp & D_2^B & 0 & 0  \\
+    P_3R_2Q_1^\trp & P_3Q_2^\trp & D_3^B & 0  \\
+    P_4R_3R_2Q_1^\trp & P_4R_3Q_2^\trp & P_4Q_3^\trp & D_4^B
+    \end{bmatrix}.
+\end{align*}
+\end{itemize}
+
+\vspace{0.4cm}
+
+\noindent \textbf{Further corrections:}
+
+\begin{itemize}
+ \item[5:] Please change the name of the fourth author to \textsf{E. Y. M. Ang}.
+ \item[6:] Please add revised date: 13 April 2017.
+ \item[24:] Please change the keyword to: \textsf{Multilevel sequentially semiseparable (MSSS) matrices}
+ \item[126 -- 128:] Please add a full stop at the end of Eq. (6) and replace lines 126 -- 128 by: All parameter functions are assumed in $L^1(\Omega)$. More specifically, we interpolate data points using $Q_1$ basis functions.
+ \item[Alg. 1:] Please change caption: Preconditioned IDR($s$) for linear matrix equations [4]
+ \item[Alg. 1, l.2:] Please remove line break after $(0,1)$
+ \item[Alg. 1, l.28:] Replace by: Overwrite $k$-th block of $G, U$ by $G_k, U_k$
+ \item[Alg. 1, l.34:] Replace comment: \quad $\vartriangleright$ $\rho_0 = 0.7$ recommended in [40]
+ \item[Alg. 2, l. 21:] Please change the comment to: \quad $\vartriangleright$ SSS inversion (App. A) \& matrix-matrix multiplication (App. B)
+ \item[446:] Please avoid line break, i.e. $R_s^{ij} = W_s^{ij} \equiv 0$ should be in one line.
+ \item[t4.5:] Please round 0.55 s to 0.6 s.
+ \item[t4.5:] Please round 0.71 s to 0.7 s.
+ \item[t4.6:] Please round 2.91 s to 2.9 s.
+ \item[t5.5:] Please round 0.50 s to 0.5 s.
+ \item[t5.5:] Please round 0.83 s to 0.8 s.
+ \item[t5.6:] Please round 2.91 s to 2.9 s.
+ \item[t6.4:] Please round 8.18 s to 8.2 s.
+ \item[Table 6:] Please adapt the table accordingly:
+ 
+ \begin{table}[H]
+  \centering
+  \begin{tabular}{lll}
+  \hline
+   \# RHSs &MSSS factorization& PIDR($s=4)$ \\
+   \hline
+   \phantom{0}1&60.2 s&\phantom{00}8.2 s (8 iter.) \\
+   \phantom{0}5&60.2 s&\phantom{0}25.0 s (8 iter.)\\ 
+   10&60.1 s&\phantom{0}43.5 s (8 iter.) \\
+   20&60.3 s&108.3 s (8 iter.) \\ 
+   \hline
+  \end{tabular}
+ \end{table}
+
+ \item[Table 7:] Please do not display timings in computer font (no \texttt{texttt} environment necessary).
+\end{itemize}
+
+\vspace{0.4cm}
+
+\noindent \textbf{Optional corrections:}
+
+If the text layout allows, please change the following figure captions (additional explanations have been added):
+\begin{itemize}
+ \item [\textbf{Fig. 7}] Schematic illustration: The diagonal blocks of $\hat{S}$ in Eq. 22 correspond to a sequence of $n_z$ 2D problems in the $xy-$plane. This algebraic decoupling affects the propagation of information along the $z$-axis and, hence, the quality of the preconditioner in 3D. Note that this effect is much less severe in the presence of damping, cf. [7].
+ \item [\textbf{Fig. 12}] Speed of S-waves in $m/s$ (top), and real part of the $z$-component of the displacement vector in frequency-domain at $f=4$ Hz (middle) and $f=6$ Hz (bottom) for the \marmousi model, cf. [21] for a complete parameter set. The source location is indicated by the symbol '$\triangledown$'. In the present setting, the water layer of the \texttt{Marmousi-II} model has been removed, and we place the source term at $L_x/3$. 
+\end{itemize}
+
+
+\vspace{2cm}
+
+\hfill We would like to thank you for your excellent services!
+
+\vspace{0.4cm}
+
+\hfill With kind regards,
+
+\hfill Manuel Baumann
+
+\hfill \texttt{m.m.baumann@tudelft.nl}
+\end{document}

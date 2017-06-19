@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage[top=90pt,bottom=90pt,left=110pt,right=105pt]{geometry}
+\usepackage{color}
+\usepackage{amssymb,amsmath,amsfonts,mathtools}
+\usepackage{footnote, hyperref}
+
+\begin{document}
+
+\title{\bf COMG-D-16-00141}
+\author{Reviewer \#2}
+
+\maketitle
+
+\begin{itemize}
+ 
+\item It is not clear what is original in terms of the precondition strategy proposed in the paper. The key contributions of the work need to be stated in the introduction. 
+
+{\color{red}A: We emphasized this in the introduction.}
+
+\item In Section 2.1., the problem needs to be properly posed in the setting of appropriate Sobolev Spaces. In other words, authors must indicate the Sobolev Spaces of the solutions, sources, parameter functions and the boundary conditions.
+
+{\color{red}A: The problem is now stated as a weak formulation in the appropriate function spaces.}
+	
+\item Authors need to provide more problem specific remarks in Sections 3 and 4, it appears that the Sections 3 and 4 only remotely touches on the matrix equations resulting from the discretization of the Time-Harmonic Elastic Wave Equation.
+
+{\color{red}A: Section 3 describes a method to solve linear matrix equations $\mathcal{A}(\mathbf{X}) = \mathbf{B}$ that is to a large extend independent of the fact that we aim to solve the time-harmonic wave equation at multiple frequencies. We, however, do point out in Section 3.2 that (11) fits this framework if the linear operator is $\mathcal{A}(\mathbf{X}) \equiv K\mathbf{X} + i C \mathbf{X} \Sigma - M \mathbf{X} \Sigma^2$. Section 4 can as well be applied to general matrices with hierarchical structure. In the paper we describe in detail that the 3D elastic operator can be represented in a hybrid MSSS format (cf. Figure 5), and we describe how at each level the specific discretization is taken into account. In particular, we clarify thanks to your second next remark that the 1D level matrix is of SSS structure.}
+
+\item In Algorithm 1, it is not clear to the general readers where the 0.7 is from in lines 34 and 35. Please, explain.
+
+{\color{red}A: The optimization of this parameter is discussed in the newly added reference [40] Moreover, we slightly simplified notation in Algorithm 1.}
+
+\item After the Definition~3, authors need to show that the 1D level of the matrix from the problem is indeed SSS matrix.
+
+{\color{red}A: This is a very helpful remark! In general, every matrix can be written in SSS format, even dense matrices. However, the off-diagonal ranks $l_i$ and $k_i$ of Definition~3 are equal to the degree $p$ of the B-splines introduced in the FEM ansatz in (7)-(8). We added this explanation to the document, see the paragraph following Table 1.}
+
+\item In Definition 4, MATLAB needs to be properly cited.
+
+{\color{red}A: Instead of citing MATLAB, we slightly reformulated Definition 4 such that the used \textit{colon-style} notation for selecting submatrix blocks is now more clear to the reader.}
+
+\newpage
+
+\item In Section 5, only the convergence comparison is showed between BiCGStab and IDR. Author needs to provide the run time comparison also for the numerical examples presented between BiCGStab and IDR.
+
+{\color{red}A: We added Table 7 to the document containing the CPU times corresponding to Experiment 7.}
+\end{itemize}
+
+\vspace{1cm}
+
+\noindent \textbf{General remarks:}\\
+We slightly adapted \textbf{Experiment 6} based on new inside: In [7] we consider elastic problems at multiple wave frequencies solved with the (preconditioned) multi-shift GMRES algorithm of Frommer and Gl\"assner\footnote{See: \href{http://epubs.siam.org/doi/abs/10.1137/S1064827596304563}{http://epubs.siam.org/doi/abs/10.1137/S1064827596304563}}. The spectral analysis developed in [7] gives rise to an obvious extension of the matrix equation approach presented in the present paper. We use a right-multiplication of the block unknown $\mathbf{X}$ with a diagonal matrix whose $k$-th entry is $e^{-i(\varphi_k-\varphi_1)}$ in order to appropriately rotate the spectrum of the block operator. This modification leads to a more clustered spectrum for the matrix equation approach and is explained in more detail in [7] where global GMRES is used. As a result, the experiment for frequency range $f_k \in [2.4,2.8]$ Hz is improved and we added a wider range experiment $f_k \in [2.0,4.0]$ Hz to the document, cf. Figure~13.
+\end{document}

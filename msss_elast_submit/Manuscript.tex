@@ -1,0 +1,171 @@
+%%%%%%%%%%%%%%%%%%%%%%% file template.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a general template file for the LaTeX package SVJour3
+% for Springer journals.          Springer Heidelberg 2010/09/16
+%
+% Copy it to a new file with a new name and use it as the basis
+% for your article. Delete % signs as needed.
+%
+% This template includes a few options for different layouts and
+% content for various journals. Please consult a previous issue of
+% your journal as needed.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% First comes an example EPS file -- just ignore it and
+% proceed on the \documentclass line
+% your LaTeX will extract the file if required
+\begin{filecontents*}{example.eps}
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 19 19 221 221
+%%CreationDate: Mon Sep 29 1997
+%%Creator: programmed by hand (JK)
+%%EndComments
+gsave
+newpath
+  20 20 moveto
+  20 220 lineto
+  220 220 lineto
+  220 20 lineto
+closepath
+2 setlinewidth
+gsave
+  .4 setgray fill
+grestore
+stroke
+grestore
+\end{filecontents*}
+%
+%\RequirePackage{fix-cm}
+%
+% \documentclass{svjour3}                     % onecolumn (standard format)
+%\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
+% \documentclass[smallextended]{svjour3}       % onecolumn (second format)
+\documentclass[twocolumn]{svjour3}          % twocolumn
+%
+\smartqed  % flush right qed marks, e.g. at end of proof
+%
+\usepackage{graphicx}
+%
+\usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%
+% insert here the call for the packages your document requires
+\usepackage{amssymb,amsmath,amsfonts,mathtools}
+\usepackage{hyperref} 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{color}
+\alglanguage{pseudocode}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+%\usepackage[british]{babel}
+% \usepackage{draftwatermark}
+% \SetWatermarkText{DRAFT}
+% \SetWatermarkScale{1}
+
+\definecolor{darkgray}{rgb}{0.66, 0.66, 0.66}
+\definecolor{arsenic}{rgb}{0.23, 0.27, 0.29}
+\definecolor{dimgray}{rgb}{0.41, 0.41, 0.41}
+% \definecolor{lightgray}{\colorlet{shadecolor}{gray!40}}
+
+\usepackage{epstopdf}
+\epstopdfsetup{update}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{ragged2e} 
+
+% \usepackage{etoolbox}
+% \newrobustcmd*{\mytriangle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0.2cm) -- (0.2cm,0.2cm) -- (0.1cm,0);}}
+
+\input{def}
+
+\begin{document}
+
+
+\title{An MSSS-Preconditioned Matrix Equation Approach for the Time-Harmonic Elastic Wave Equation at Multiple Frequencies}
+% \subtitle{Do you have a subtitle?\\ If so, write it here}
+% \titlerunning{An MSSS preconditioner for the time-harmonic elastic wave equation at multiple frequencies}        % if too long for running head
+
+\author{M. Baumann \and R. Astudillo \and Y. Qiu \and E. Ang \and M.B. van Gijzen \and R.-\'E. Plessix}
+
+%\authorrunning{Short form of author list} % if too long for running head
+% Commented for the Technical Report
+\institute{Manuel Baumann (corresponding)\at
+           Delft University of Technology\\
+           Delft Institute of Applied Mathematics\\
+           \email{\href{m.m.baumann@tudelft.nl}{\texttt{m.m.baumann@tudelft.nl}}}
+           \and
+           Reinaldo Astudillo \at
+           Delft University of Technology
+	   \and
+           Yue Qiu \at
+           Max Planck Institute for Dynamics \\of Complex Technical Systems
+           \and
+           Elisa Ang \at
+           Nanyang Technological University
+           \and
+           Martin B. van Gijzen\at
+           Delft University of Technology
+           \and
+           Ren\'e-\'Edouard Plessix \at
+           Shell Global Solutions International B.V.
+}
+
+\date{\today}
+% The correct dates will be entered by the editor
+
+\maketitle
+
+\begin{abstract}
+In this work we present a new numerical framework for the efficient solution of the time-harmonic elastic wave equation at multiple frequencies. We show that multiple frequencies (and multiple right-hand sides) can be incorporated when the discretized problem is written as a matrix equation. This matrix equation can be solved efficiently using the preconditioned IDR($s$) method. We present an efficient and robust way to apply a single preconditioner using MSSS matrix computations. For 3D problems, we present a memory-efficient implementation that exploits the solution of a sequence of 2D problems. Realistic examples in two and three spatial dimensions demonstrate the performance of the new algorithm.
+
+\keywords{time-harmonic elastic wave equation \and multiple frequencies \and Induced Dimension Reduction (IDR) method \and preconditioned matrix equations \and multilevel sequentially semiseparable matrices (MSSS)}
+% \PACS{PACS code1 \and PACS code2 \and more}
+% \subclass{MSC code1 \and MSC code2 \and more}
+\end{abstract}
+
+% \tableofcontents
+
+\section{Introduction}
+\label{intro}
+% The understanding of the earth subsurface is a key task in geophysics, and seismic exploration is an approach that match\-es the intensity of reflected shock waves with simulation results in a least squares sense; cf. \cite{VO09} and the references therein for an overview of state-of-the-art Full-Waveform Inversion (FWI) algorithms. 
+The understanding of the earth subsurface is a key task in geophysics, and Full-Waveform Inversion (FWI) is a computational approach that match\-es the intensity of reflected shock waves (measurements) with simulation results in a least squares sense; cf. \cite{VO09} and the references therein for an overview of state-of-the-art FWI algorithms. From a mathematical point of view, the problem of matching measurements with simulation results leads to a PDE-constrained optimization problem where the objective function is defined by the respective FWI approach, and the constraining partial differential equation (PDE) is the wave equation. Since the earth is an elastic medium, the elastic wave equation needs to be considered. In order to design an efficient optimization algorithm, a fast numerical solution of the elastic wave equation is required at every iteration of the optimization loop. This so-called \textit{forward problem} is the focus of this work.
+
+More recently, FWI has been considered for an equivalent problem formulated in the frequency-domain \cite{MPl04,P99}. The frequency-domain formulation of wave propagation has shown specific modeling advantages for both acoustic and elastic media. For the efficient FWI, notably the waveform tomography \cite{PPS15,VO09}, a fast numerical solution of the respective time-harmonic forward problem is required. More precisely, the forward problem requires the fast numerical solution of the discretized time-harmonic elastic wave equation at multiple wave frequencies and for multiple source terms. In this context, many efficient numerical solution methods have been proposed mostly for the (acoustic) Helmholtz e\-qua\-tion \cite{PN14,P09,PM04,REPMVO06}. In this work, we present an efficient solver of the time-harmonic \textit{elastic} wave equation that results from a finite element discretization, cf. \cite{DBD09,ECVG10}. 
+
+Especially for large 3D problems, the efficient numerical solution with respect to computation time and memory requirements is subject to current research. When an iterative Krylov method is considered, the design of efficient preconditioners for the elastic wave equation is required. In \cite{apt09} a damped preconditioner for the elastic wave equation is presented. The authors of \cite{Rizzuti2016} analyze a multi-grid approach for the damped problem. Both works are extensions of the work of Erlangga et al. \cite{REPMVO06} for the acoustic case. The recent low-rank approach of the MUMPS solver \cite{Amestoy2015} makes use of the hierarchical structure of the discrete problem and can be used as a preconditioner, cf. \cite{ABBEMMMO16,WHXL12}. When domain decomposition is considered, the sweeping preconditioner \cite{Tsuji2014} is an attractive alternative.
+
+In this work we propose a \textit{hybrid} method that combines the iterative Induced Dimension Reduction (IDR) method with an efficient preconditioner that exploits the multilevel sequentially semiseparable (MSSS) matrix structure of the discretized elastic wave equation on a Cartesian grid. Moreover, we derive a matrix equation formulation that includes multiple frequencies and multiple right-hand sides, and pres\-ent a version of IDR that solves linear matrix equations at a low memory requirement. The paper is structured as follows: In Section \ref{sec:EWE}, we derive a finite element discretization for the time-har\-mon\-ic elastic wave equation with a special emphasis on the case when multiple frequencies are present. Section \ref{ch:idr} pres\-ents the IDR($s$) method for the iterative solution of the resulting matrix equation. We discuss an efficient preconditioner in Section \ref{ch:msss} based on the MSSS structure of the discrete problem. We present different versions of the MSSS preconditioner for 2D and 3D problems in Section \ref{ch:msss_lu} and \ref{ch_msss3d}, respectively. The paper concludes with extensive numerical tests in Section \ref{ch:num}.
+
+\input{prob}
+\input{idr_method}
+\input{msss_preconditioners}
+\input{num_ex}
+\section{Conclusions}
+We present an efficient \textit{hybrid} method for the numerical solution of the inhomogeneous time-harmonic elastic wave equation. We use an incomplete block-LU factorization based on MSSS matrix computations as a preconditioner for IDR($s$). The presented framework further allows to incorporate multiple wave frequencies and multiple source locations in a matrix equation setting \eqref{eq:mateq_approach2}. The suggested MSSS preconditioner is conceptional different for 2D and 3D problems:
+\begin{itemize}
+ \item We derive an MSSS permutation matrix \eqref{eq:Psi} that transforms the 2D elastic operator into block tridiagonal level-2 MSSS matrix structure. This allows the application of an approximate Schur factorization \eqref{eq:full_Schur}-\eqref{eqn_schur}. In order to a\-chieve linear computational complexity, the involved SSS operations (level-1) are approximated using model order reduction techniques that limit the off-diagonal rank.
+ \item A generalization to 3D problems is not straight-forward because no model order reduction algorithms for level-2 MSSS matrices are currently available \cite{QG15}. We therefore suggest the SSOR splitting \eqref{eq:approx_Schur} where off-diagonal blocks are treated as sparse matrices and diagonal blocks resemble a sequence of 2D problems in level-2 MSSS structure.
+\end{itemize}
+
+We present a series of numerical experiments on a 2D elastic \texttt{wedge} problem (Figure \ref{fig:wedge2d}) that prove theoretical concepts. In particular, we have numerically shown that a small off-di\-ag\-o\-nal rank $r^\ast \sim 10$ yields a preconditioner such that IDR($s$) converges within very few iterations (Experiment \ref{exp:off_rank}).
+
+Further numerical experiments for 2D elastic problems are performed on the realistic \marmousi data set. The newly derived matrix equation approach shows computational advantages when multiple right-hand sides (Experiment \ref{multiRHS}) and multiple frequencies (Experiment \ref{multifreq}) are solved simultaneously.
+
+In Corollary \ref{mem_3d}, we prove that the MSSS preconditioner has linear memory requirements for 2D and 3D problems. The overall computational complexity is investigated for the case of a constant number of wavelength, i.e. the number of grid points $n$ in one spatial direction in linearly increased with the wave frequency. Numerical experiments show $\mathcal{O}(n^3)$ complexity for 2D (Experiment \ref{exp:freq1}) and $\mathcal{O}(n^5)$ complexity for 3D (Experiment \ref{ex:num_3d}) problems. The 3D preconditioner solves a sequence of 2D problems and can be parallelized in a straight forward way. 
+
+\section*{Acknowledgments}
+We would like to thank Joost van Zwieten, co-developer of the open source project \texttt{nutils}\footnote{\url{http://www.nutils.org/}} for helpful discussions concerning the finite element discretization described in Section \ref{ch:discretization}. Shell Global Solutions International B.V. is gratefully acknowledged for financial support of the first author.
+
+% BibTeX users please use one of
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+\bibliographystyle{spmpsci}      % mathematics and physical sciences
+%\bibliographystyle{spphys}       % APS-like style for physics
+\bibliography{ref}
+% \newpage
+\begin{appendix}
+\input{appendix}
+\end{appendix}
+
+\end{document}
