@@ -138,8 +138,9 @@
 \@defInstituteOption{HU}
 %    {Humboldt-Universit\"at zu Berlin\\\@matheonurl{www.hu-berlin.de}}
     {Humboldt-Universit\"at zu Berlin}
-    {\hspace*{-0.35cm}\includegraphics[width=1.5\linewidth]{DCSElogobold_fw-crop5}\\ \vspace{0.3cm}}
-%     {\includegraphics[width=\linewidth]{DCSElogobold_fw-crop5}}
+   % {\hspace*{-0.35cm}\includegraphics[width=1.5\linewidth]{DCSElogobold_fw-crop5}\\ \vspace{0.3cm}}
+   {\hspace*{-0.5cm}\includegraphics[width=1.3\linewidth]{poster_MPI_Magdeburg_Logo_en}\\ \vspace{0.3cm}}
+    %     {\includegraphics[width=\linewidth]{DCSElogobold_fw-crop5}}
 	
 \@defInstituteOption{TU}
 %    {Technische Universit\"at Berlin\\\@matheonurl{www.tu-berlin.de}}
