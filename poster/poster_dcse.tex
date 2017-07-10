@@ -42,6 +42,7 @@
 \definecolor{color1}{rgb}{0.501960784313725,0.498039215686275,1} 
 \definecolor{color2}{rgb}{0.752941176470588,0.247058823529412,1}
 
+
 \newcommand{\leftcolspace}{0.025\contentswidth}
 \newcommand{\leftcolwidth}{0.6\contentswidth}
 \newcommand{\rightcolspace}{0.65\contentswidth}
@@ -114,22 +115,22 @@
   	\belowdisplayskip=0.5mm
 	\begin{align}
 	\label{eq:prob}
-	(K + i {\color{matheonlightblue}\omega_k}C - {\color{matheonlightblue}\omega_k^2}M) \mathbf{x}_k = \mathbf{b}, \quad k = 1,...,N,
+	(K + i {\color{matheonlightblue}\omega_k}C - {\color{matheonlightblue}\omega_k^2}M) x_k = b, \quad k = 1,...,N,
 	\end{align}
 	where $\{ {\color{matheonlightblue}\omega_1},...,{\color{matheonlightblue}\omega_N}\}$ are a range of (angular) frequencies.
 	\begin{enumerate}
 	 \item Linearization:
 	 \abovedisplayskip=0.3mm
   	 \belowdisplayskip=0.3mm
-	 \begin{align}
-	    \label{eq:lin}
-	    \left\{\begin{bmatrix} i C & K \\ I & 0\end{bmatrix} - {\color{matheonlightblue}\omega_k} \begin{bmatrix} M & 0 \\ 0 & I\end{bmatrix} \right\} \begin{bmatrix} \omega_k \mathbf{x}_k \\  \mathbf{x}_k\end{bmatrix} = \begin{bmatrix} \mathbf{b} \\ 0\end{bmatrix}
-	\end{align}
-	 \item Matrix equation:
+	 \begin{align*}
+% 	    \label{eq:lin}
+	    (\mathcal{K} - {\color{matheonlightblue}\omega_k} \mathcal{M}) \mathbf{x}_k := \left\{\begin{bmatrix} i C & K \\ I & 0\end{bmatrix} - {\color{matheonlightblue}\omega_k} \begin{bmatrix} M & 0 \\ 0 & I\end{bmatrix} \right\} \begin{bmatrix} \omega_k x_k \\ x_k\end{bmatrix} = \begin{bmatrix} b \\ 0\end{bmatrix}
+	\end{align*}
+	 \item Apply shift-and-invert preconditioner:
 	 \abovedisplayskip=0.8mm
   	 \belowdisplayskip=0.3mm
 	    \begin{align}
-	K \mathbf{X} - i C \mathbf{X} {\color{matheonlightblue}\Omega} + M \mathbf{X} {\color{matheonlightblue}\Omega^2} = B, \quad \Omega := \text{diag}(\omega_1,...,\omega_N).
+	\mathcal{P}({\color{green!70!black}\tau})^{-1} := (\mathcal{K} - {\color{green!70!black}\tau} \mathcal{M})^{-1} \hspace{0.7cm} \text{ [cf. Fig. 3 for choice of } {\color{green!70!black}\tau} \text{]} 
 	\end{align}
 	\end{enumerate}
 	\vspace{-0.4cm}
@@ -138,7 +139,7 @@
 
 
 \rput[tl](\leftcolspace,98.5mm){
- \posterroundedtabshadowbox{white}{\fbsdefault}{\leftcolwidth}{\large Simulation results in 2D and 3D}{
+ \posterroundedtabshadowbox{white}{\fbsdefault}{\leftcolwidth}{\large Simulation results for 2D and 3D}{
       \small\raggedright
 %         \rnode{c}{
         \begin{tikzpicture}
@@ -158,48 +159,93 @@
 
 
 \rput[tl](\leftcolspace,181mm){
-  \posterroundedtabshadowbox{white}{\fbsdefault}{\leftcolwidth}{\large Preconditioning multi-shift wave propagation problems }{
+  \posterroundedtabshadowbox{white}{\fbsdefault}{\leftcolwidth}{\large Preconditioning the elastic operator in 2D and 3D}{
      \small\raggedright
-    \begin{tikzpicture}[overlay]
-     \node at (9.5,-0.32) {${\color{gray}\mathcal{A} := \begin{bmatrix} i C & K \\ I & 0\end{bmatrix},\ \mathcal{B} := \begin{bmatrix} M & 0 \\0 & I\end{bmatrix}}$};
-    \end{tikzpicture}
     
-    \vspace{0.05cm}
-       	Right-preconditioning of \eqref{eq:lin} yields,
-       	 \belowdisplayskip=0.9mm
-       	\begin{align*}
-(\mathcal{A}-\omega_k\mathcal{B})\mathcal{P}_k^{-1}\mathbf{y}_k = \mathbf{b} \quad \Leftrightarrow \quad  (\mathcal{A}(\mathcal{A}-{\color{red}\tau} \mathcal{B})^{-1}  - \eta_k I) \mathbf{y}_k = \mathbf{b},
-\end{align*}
-where $\eta_k = \omega_k/(\omega_k-{\color{red}\tau})$ and $\mathcal{P}_k = (1-\eta_k) (\mathcal{A}-{\color{red}\tau} \mathcal{B})$.
-\begin{itemize}
- \item Use \textsf{MSSS} matrix computations to approximately apply $(\mathcal{A}- {\color{red}\tau} \mathcal{B})^{-1}$, cf. Figure 2.
- \item Choose ${\color{red}\tau}$ optimally in the sense of,
-        \abovedisplayskip=0.8mm
-        \belowdisplayskip=0.3mm
-	\begin{align*}
-	\tau^\ast = \min_{\tau \in \mathbb{C}} \max_{k=1,...,N} \left( \frac{R_{\color{gray}k}(\tau)}{|c_k(\tau)|} \right), \quad \text{cf. Figure 3.}
-	\end{align*}
-
-\end{itemize}
-
-\begin{tikzpicture}
-\node [mybox] (box){%
-    \begin{minipage}{0.93\textwidth}
-    \vspace{-0.4cm}
-    Let the eigenvalues of the preconditioned matrix be enclosed by a circle of radius $R$ and center $c$. Then the GMRES-residual norm after $i$ iterations $\|r^i\|$ satisfies,
-    \abovedisplayskip=0.5mm
-    \belowdisplayshortskip=0.1mm
-    \begin{align*}
-    \frac{\|r^i\|}{\|r^0\|} \leq c_2(X) \left( \frac{R}{|c|} \right)^i,
-    \end{align*}
-    where $X$ is the matrix of eigenvectors, and $c_2(X)$ its condition number in $2$-norm.
-    \vspace{-0.5cm}
-    \end{minipage}
-};
-\node[fancytitle, right=10pt] at (box.north west) {Theorem: GMRES convergence bound [Y. Saad, 2003]};
-\end{tikzpicture}%
-\vspace{-0.2cm}
+    For the \textbf{2D operator} (red in Fig. 2) we compute a block-LU factorization of the form $\mathcal{P}(\tau)=LSU$, with 
+    \abovedisplayskip=0.8mm
+    \belowdisplayskip=0.4mm
+    \begin{equation*}
+      L_{i,j}=\begin{cases}
+             I &\hspace{-0.2cm} \text{if}\ i=j \\
+             P_{i,j}{\color{magenta}S_j}^{-1} &\hspace{-0.2cm} \text{if}\ i = j+1
+	     \end{cases}, \quad
+      U_{i,j}=\begin{cases}
+             I &\hspace{-0.2cm} \text{if}\ j=i \\
+             {\color{magenta}S_i}^{-1}P_{i,j} &\hspace{-0.2cm} \text{if}\ j = i+1
+	     \end{cases},     
+    \end{equation*}
+    and Schur complements given by
+    \abovedisplayskip=0.8mm
+    \belowdisplayskip=0.4mm
+    \begin{equation*}
+        {\color{magenta}S_i}=\begin{cases}
+             P_{i,i} & \text{if}\ i=1 \\
+             P_{i,i}-P_{i,i-1}{\color{magenta}S_{i-1}}^{-1}P_{i-1,i} & \text{if}\ 2\leq i\leq n_x.
+	     \end{cases}
+    \end{equation*}
+    Here, the matrices {\color{magenta}$S_i$ are SSS} matrices, and inverses are computeted inexactly.
+    
+    \vspace{0.5cm}
+    
+    For the \textbf{3D operator}, we consider
+    \abovedisplayskip=0.8mm
+    \belowdisplayskip=0.3mm
+     \begin{align*}
+  \mathcal{P}_h(\tau) %&= {\color{orange}P_\text{SSOR}^{-1}} + {\color{matheonblue}P_\text{CGC}} \\
+                           = \underbrace{{\color{orange}(LD^{-1}+I)D(D^{-1}U+I)}}_{\text{''}n_z \text{ times a 2D problem``}} +  \underbrace{{\color{matheonblue}P \mathcal{P}_H(\tau)^{-1} R}}_{\text{''small 3D``}}
+ \end{align*}
+    \begin{itemize}
+    \item The {\color{orange}block SSOR} preconditioner makes use of efficient 2D computations.
+    \item Additive {\color{matheonblue}coarse grid correction} yields grid-independent convergence.
+%     \item
+    \end{itemize}
+    
 }}
+
+% \rput[tl](\leftcolspace,181mm){
+%   \posterroundedtabshadowbox{white}{\fbsdefault}{\leftcolwidth}{\large Preconditioning multi-shift wave propagation problems }{
+%      \small\raggedright
+%     \begin{tikzpicture}[overlay]
+%      \node at (9.5,-0.32) {${\color{gray}\mathcal{A} := \begin{bmatrix} i C & K \\ I & 0\end{bmatrix},\ \mathcal{B} := \begin{bmatrix} M & 0 \\0 & I\end{bmatrix}}$};
+%     \end{tikzpicture}
+%     
+%     \vspace{0.05cm}
+%        	Right-preconditioning of \eqref{eq:lin} yields,
+%        	 \belowdisplayskip=0.9mm
+%        	\begin{align*}
+% (\mathcal{A}-\omega_k\mathcal{B})\mathcal{P}_k^{-1}\mathbf{y}_k = \mathbf{b} \quad \Leftrightarrow \quad  (\mathcal{A}(\mathcal{A}-{\color{red}\tau} \mathcal{B})^{-1}  - \eta_k I) \mathbf{y}_k = \mathbf{b},
+% \end{align*}
+% where $\eta_k = \omega_k/(\omega_k-{\color{red}\tau})$ and $\mathcal{P}_k = (1-\eta_k) (\mathcal{A}-{\color{red}\tau} \mathcal{B})$.
+% \begin{itemize}
+%  \item Use \textsf{MSSS} matrix computations to approximately apply $(\mathcal{A}- {\color{red}\tau} \mathcal{B})^{-1}$, cf. Figure 2.
+%  \item Choose ${\color{red}\tau}$ optimally in the sense of,
+%         \abovedisplayskip=0.8mm
+%         \belowdisplayskip=0.3mm
+% 	\begin{align*}
+% 	\tau^\ast = \min_{\tau \in \mathbb{C}} \max_{k=1,...,N} \left( \frac{R_{\color{gray}k}(\tau)}{|c_k(\tau)|} \right), \quad \text{cf. Figure 3.}
+% 	\end{align*}
+% 
+% \end{itemize}
+% 
+% \begin{tikzpicture}
+% \node [mybox] (box){%
+%     \begin{minipage}{0.93\textwidth}
+%     \vspace{-0.4cm}
+%     Let the eigenvalues of the preconditioned matrix be enclosed by a circle of radius $R$ and center $c$. Then the GMRES-residual norm after $i$ iterations $\|r^i\|$ satisfies,
+%     \abovedisplayskip=0.5mm
+%     \belowdisplayshortskip=0.1mm
+%     \begin{align*}
+%     \frac{\|r^i\|}{\|r^0\|} \leq c_2(X) \left( \frac{R}{|c|} \right)^i,
+%     \end{align*}
+%     where $X$ is the matrix of eigenvectors, and $c_2(X)$ its condition number in $2$-norm.
+%     \vspace{-0.5cm}
+%     \end{minipage}
+% };
+% \node[fancytitle, right=10pt] at (box.north west) {Theorem: GMRES convergence bound [Y. Saad, 2003]};
+% \end{tikzpicture}%
+% \vspace{-0.2cm}
+% }}
 
 
 \rput[tl](\rightcolspace,233mm){
