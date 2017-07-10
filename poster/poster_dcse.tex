@@ -130,7 +130,7 @@
 	 \abovedisplayskip=0.8mm
   	 \belowdisplayskip=0.3mm
 	    \begin{align}
-	\mathcal{P}({\color{green!70!black}\tau})^{-1} := (\mathcal{K} - {\color{green!70!black}\tau} \mathcal{M})^{-1} \hspace{0.7cm} \text{ [cf. Fig. 3 for choice of } {\color{green!70!black}\tau} \text{]} 
+	\mathcal{P}({\color{green!80!black}\tau})^{-1} := (\mathcal{K} - {\color{green!80!black}\tau} \mathcal{M})^{-1} \hspace{0.7cm} \text{ [cf. Fig. 3 for choice of } {\color{green!80!black}\tau \in \mathbb{C}} \text{]} 
 	\end{align}
 	\end{enumerate}
 	\vspace{-0.4cm}
@@ -175,7 +175,7 @@
              {\color{magenta}S_i}^{-1}P_{i,j} &\hspace{-0.2cm} \text{if}\ j = i+1
 	     \end{cases},     
     \end{equation*}
-    and Schur complements given by
+    and Schur complements given by the recursion,
     \abovedisplayskip=0.8mm
     \belowdisplayskip=0.4mm
     \begin{equation*}
@@ -184,20 +184,20 @@
              P_{i,i}-P_{i,i-1}{\color{magenta}S_{i-1}}^{-1}P_{i-1,i} & \text{if}\ 2\leq i\leq n_x.
 	     \end{cases}
     \end{equation*}
-    Here, the matrices {\color{magenta}$S_i$ are SSS} matrices, and inverses are computeted inexactly.
+    Here, the matrices {\color{magenta}$S_i$ are SSS} matrices; and inverses are computeted \textit{inexactly}.
     
     \vspace{0.5cm}
     
-    For the \textbf{3D operator}, we consider a splitting $\mathcal{P}=L+D+U$:
+    For the \textbf{3D operator}, we consider a splitting $\mathcal{P}(\tau)=L+D+U$:
     \abovedisplayskip=0.8mm
     \belowdisplayskip=0.3mm
      \begin{align*}
   \mathcal{P}_h(\tau) %&= {\color{orange}P_\text{SSOR}^{-1}} + {\color{matheonblue}P_\text{CGC}} \\
-                           = \underbrace{{\color{orange}(LD^{-1}+I)D(D^{-1}U+I)}}_{\text{''}n_z \text{ times a 2D problem``}} +  \underbrace{{\color{matheonblue}P \mathcal{P}_H(\tau)^{-1} R}}_{\text{''small 3D``}}
+                           = \underbrace{{\color{orange}(LD^{-1}+I)D(D^{-1}U+I)}}_{\text{''}n_z \text{ times a 2D problem``}} +  \underbrace{{\color{cyan}P \mathcal{P}_H(\tau)^{-1} R}}_{\text{''small 3D``}}
  \end{align*}
     \begin{itemize}
     \item The {\color{orange}block SSOR} preconditioner makes use of efficient 2D computations.
-    \item Additive {\color{matheonblue}coarse grid correction} yields grid-independent convergence ($H \ll h$).
+    \item Additive {\color{cyan}coarse grid correction} yields grid-independent convergence ($H \ll h$).
 %     \item
     \end{itemize}
     
