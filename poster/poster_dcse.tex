@@ -184,7 +184,7 @@
              P_{i,i}-P_{i,i-1}{\color{magenta}S_{i-1}}^{-1}P_{i-1,i} & \text{if}\ 2\leq i\leq n_x.
 	     \end{cases}
     \end{equation*}
-    Here, the matrices {\color{magenta}$S_i$ are SSS} matrices; and inverses are computed \textit{inexactly}.
+    Here, the matrices {\color{magenta}$S_i$ are SSS} matrices; and inverses are computed \textit{inexactly}, cf. \cite{3}.
     
     \vspace{0.5cm}
     
@@ -196,7 +196,7 @@
                            = \underbrace{{\color{orange}(LD^{-1}+I)D(D^{-1}U+I)}}_{\text{''}n_z \text{ times a 2D problem``}} +  \underbrace{{\color{cyan}P \mathcal{P}_H(\tau)^{-1} R}}_{\text{''small 3D``}}
  \end{align*}
     \begin{itemize}
-    \item The {\color{orange}block SSOR} preconditioner makes use of efficient 2D computations.
+    \item The {\color{orange}block SSOR} preconditioner makes use of efficient 2D computations, cf. \cite{0}.
     \item Additive {\color{cyan}coarse grid correction} yields grid-independent convergence ($H \ll h$).
 %     \item
     \end{itemize}
@@ -285,7 +285,7 @@
       \vspace{0.3cm}
 	\vspace{-0.2cm}{
 	\centerline{Fig. 3: Spectra after M\"obius transformation.}
-	\centerline{Choose $\tau$ such that {\color{green!80!black}$R_k / |c_k| \rightarrow \min$}}}
+	\centerline{Choose $\tau$ such that {\color{green!80!black}$R_k / \|c_k\| \rightarrow \min$}}}
 	\vspace{-0.55cm}
 }}
 
